@@ -15,6 +15,7 @@ lines = f.read().splitlines()
 epp = 0.027 * 1.17 * (10 ** -17) * 6.242 * (10 ** 12) * 3600
 
 total_energy = 0
+total_yef = 0
 weigh_f = 0.12
 mass = 1.0
 max = 0.0
@@ -29,13 +30,23 @@ for i in range(len(lines)-6):
     if Energy[i] < min:
         min = Energy[i]
     total_energy += Energy[i]
+    total_yef += yef[i]
 
 avg = total_energy / len(Energy)
+avg_ef = total_yef / len(yef)
 variance = sum((x - avg) ** 2 for x in Energy) / len(Energy)
+var_ef = sum((x - avg_ef) ** 2 for x in yef) / len(yef)
+# Trend line for energy
 std_dev = np.sqrt(variance)
 x = np.arange(len(Energy))
 coefficients = np.polyfit(x, Energy, 1)
 linear_fit = np.poly1d(coefficients)
+
+# Trend line for effective dose
+std_dev_ef = np.sqrt(var_ef)
+x_yef = np.arange(len(yef))
+coef_ef = np.polyfit(x, yef, 1)
+linfit_ef = np.poly1d(coef_ef)
 
 avg_ef = parse.getefdose(total_energy / len(Energy), time)
 max_ef = parse.getefdose(max, time)
@@ -65,6 +76,7 @@ plt.grid()
 plt.show()
 # Make a new graph with yearly effective dose calculated with each radon data
 plt.plot(yef)
+plt.plot(x_yef, linfit_ef(x_yef), label="Trend lines", linestyle='--', color='red')
 plt.title(f"{title}의 연간유효선량")
 plt.xlabel("Time(In hours)")
 plt.ylabel("Yearly effective dose(mSv/yr)")
