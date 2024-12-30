@@ -48,7 +48,7 @@ x_yef = np.arange(len(yef))
 coef_ef = np.polyfit(x, yef, 1)
 linfit_ef = np.poly1d(coef_ef)
 
-avg_ef = parse.getefdose(total_energy / len(Energy), time)
+avg_ef = parse.getefdose(avg, time)
 max_ef = parse.getefdose(max, time)
 min_ef = parse.getefdose(min, time)
 print(avg)
